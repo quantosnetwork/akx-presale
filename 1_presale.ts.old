@@ -1,0 +1,69 @@
+import {HardhatRuntimeEnvironment} from 'hardhat/types';
+import {DeployFunction} from 'hardhat-deploy/types';
+import {parseEther} from 'ethers/lib/utils';
+// @ts-ignore
+import {upgrades, ethers} from "hardhat";
+
+const TimeContractMumBai = '0x43B8862e117F5f2b5a32815c00BF114D0B9eE074';
+
+const func2: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+    // code here
+    // @ts-ignore
+    const {deployments, getNamedAccounts} = hre;
+    const {deploy} = deployments;
+    const deployer = await ethers.getSigners();
+    const ts = new Date();
+    const tss = ts.getTime();
+
+
+
+    const akx = await ethers.getContractFactory("Akx");
+    const token = await akx.deploy("AnarchyX Presale", "AKX");
+    await token.deployTransaction.wait(5);
+
+    const _tokenAddress = token.address;
+
+
+    console.log(`akx token deployed at address: ${_tokenAddress}`);
+
+    const whitelist = await ethers.getContractFactory("Whitelist");
+    const wl = await whitelist.deploy();
+    await wl.deployTransaction.wait(5);
+    console.log(`whitelist contract deployed at address: ${wl.address}`);
+    //await hre.run("verify:verify", {address: wl.address});
+
+    const presaleContract = await ethers.getContractFactory("AkxPresale");
+    const psInstance = await upgrades.deployProxy(presaleContract, [tss], {initializer: "initialize"});
+    await psInstance.deployed();
+    const psAddress = psInstance.address;
+    const impl = await upgrades.erc1967.getImplementationAddress(psAddress);
+    //await hre.run("verify:verify", {address: impl});
+
+    console.log(`presale master deployed at address: ${psAddress}`);
+
+    const presaleDexContract = await ethers.getContractFactory("PresaleExchange");
+    const contracts = [
+
+        wl.address,
+        psAddress,
+        psAddress,
+        _tokenAddress
+    ];
+    const ppInstance = await upgrades.deployProxy(presaleDexContract, [ contracts, '0x08f3DD337d132a36ccf852841191CE714B46B6C2',parseEther("300000000"), 9592761], {initializer: "initialize"});
+    await ppInstance.deployed();
+    //await ppInstance.deployTransaction.wait(5);
+    const ppAddress = ppInstance.address;
+
+    const implAddr = await upgrades.erc1967.getImplementationAddress(ppAddress);
+    console.log(`presale dex master deployed at address: ${ppAddress} \n implementation is at ${implAddr}`);
+
+ await hre.run("verify:verify", {address: implAddr});
+   //await hre.run("verify:verify", {address: psAddress});
+
+
+
+
+
+};
+export default func2;
+func2.tags = ['all','presale'];

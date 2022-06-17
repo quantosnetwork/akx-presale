@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.14;
+
+import  "@rari-capital/solmate/src/tokens/ERC20.sol";
+import  "@rari-capital/solmate/src/utils/SafeTransferLib.sol";
+import  "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
+import {AkxPresale} from "./Presale.sol";
+
+
+contract Phase1 is ReentrancyGuard {
+
+	using SafeTransferLib for ERC20;
+
+	uint internal _isStarted;
+
+	address public _presaleMainContract;
+	AkxPresale private _presale;
+
+
+	mapping(address => bool) private _phase1Holders;
+	mapping(address => uint256) private _phase1Pledges;
+	mapping(address => bool) private _whitelisted;
+	mapping(address => bool) private _eligibleForReward;
+	mapping(address => bool) private _eligibleToFees;
+
+	uint256 public maxHoldersForPhase = 2000;
+	uint256 public tokensPerEth = 20; // 0.05 matics as start price sale for phase1
+	uint256 public whitelistCount = 0;
+
+	address public _owner;
+
+	uint256 public _canBuy = 0;
+
+	uint256 public _supply;
+
+	bool init = false;
+
+
+
+	constructor(address presale_, address token) {
+		_owner = msg.sender;
+		_token = Akx(token);
+		_presaleMainContract = presale_;
+	}
+
+
+
+	function addMyselfToWhitelist() public nonReentrant {
+		require(whitelistCount >= 2000, "whitelist is full");
+		_whitelisted[msg.sender] = true;
+		whitelistCount += 1;
+	}
+
+	function pledge(uint256 amountInEth) external payable nonReentrant {
+		require(_canBuy == 1, "cannot buy yet");
+		require(amountInEth >= 0.05 ether && amountInEth <= 500 ether , "invalid amount");
+		uint256 qty = _calculateTokensToMint(amountInEth);
+		_presale.recordPledge(msg.sender, amountInEth, qty, maxHoldersForPhase, _supply);
+
+	}
+
+	function _calculateTokensToMint(uint256 amount) private returns(uint256) {
+		return tokensPerEth * amount;
+	}
+
+	modifier onlyWhitelisted(address _sender) {
+		require(_whitelisted[_sender] == true, "whitelist your address first");
+		_;
+	}
+
+	modifier onlyOwner(address _sender) {
+		require(_owner == _sender, "only owner allowed");
+		_;
+	}
+
+	receive () external payable {
+
+	}
+
+	fallback () external payable {}
+
+
+}
