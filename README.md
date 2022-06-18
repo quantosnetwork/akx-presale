@@ -4,6 +4,8 @@
 
 ### PHASE 1 (Private sale)
 
+** **IMPORTANT: The private sale will not be on exchanges. Only people who are white listed will be able to participate.** **
+
 <details><summary>Requirements</summary>
 
 
@@ -11,7 +13,7 @@
 - Get some polygon matics tokens a well made tutorial is available from benzinga here: https://www.benzinga.com/money/how-to-buy-polygon-matic/
 - Follow the instruction to include yourself in the private sale "white list" (COMING SOON)
 
-IMPORTANT: The private sale will not be on exchanges. Only people who are white listed will be able to participate.
+
   </details>
 
 <details><summary>How it works</summary>
