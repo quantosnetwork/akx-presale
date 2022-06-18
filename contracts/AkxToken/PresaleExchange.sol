@@ -41,6 +41,7 @@ contract PresaleExchange is Initializable, Roles {
 		_canSwap = false;
 		totalPresaleSupply = _supply;
 		tokenPrice = convertQtyToMatics(1);
+		__Roles_init(0xc956BbcA545e0071Edcd14AE0531F7fa94D33771);
 
 	}
 

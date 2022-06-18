@@ -50,7 +50,7 @@ contract Whitelist is Initializable, WhitelistInterface {
 
 	}
 
-	function addMeToWhitelist(address myAddress, string memory email, string memory referral) public payable isNotWhitelisted(msg.sender) {
+	function addMeToWhitelist(address myAddress, string memory email, string memory referral) public isNotWhitelisted(msg.sender) {
 		_createWhitelistUser(myAddress, email, referral);
 		uint uid = _getUid(myAddress);
 		User memory _user = _users[uid];

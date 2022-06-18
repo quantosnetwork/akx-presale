@@ -19,12 +19,12 @@ const func4: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await wl.deployed();
 
     const wlimpl = await upgrades.erc1967.getImplementationAddress(wl.address);
-   // await hre.run("verify:verify", {address: wlimpl});
+   await hre.run("verify:verify", {address: wlimpl});
 
     const PA = await ethers.getContractFactory("PriceAggregator");
     const pa = await PA.deploy();
     await pa.deployTransaction.wait(5);
-   await hre.run("verify:verify", {address: pa.address});
+   //await hre.run("verify:verify", {address: pa.address});
 
 
     const presale = await ethers.getContractFactory("PresaleExchange");
@@ -43,7 +43,7 @@ const func4: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
    const impl = await upgrades.erc1967.getImplementationAddress(PEX.address);
 
-   await hre.run("verify:verify", {address: impl});
+  await hre.run("verify:verify", {address: impl});
 
 
 };

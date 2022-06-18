@@ -28,7 +28,7 @@ const AKX = await upgrades.deployProxy(akx, [
     tokenConfig.symbol,
     tokenConfig.decimal,
     tokenConfig.supply
-], {kind: "uups", initializer:"initialize"});
+], {initializer:"initialize"});
 
 await AKX.deployed();
 

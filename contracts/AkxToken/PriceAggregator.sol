@@ -6,11 +6,12 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import '@chainlink/contracts/src/v0.8/ChainlinkClient.sol';
 import '@chainlink/contracts/src/v0.8/ConfirmedOwner.sol';
 
-contract PriceAggregator is ChainlinkClient, ConfirmedOwner {
+contract PriceAggregator  {
 
 
 	using SafeMath for uint;
 	using SafeCast for int256;
+
 /// will need to change the addresses for mainnet
 address public immutable LINK_TOKEN=0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
 address public immutable MATIC_TO_USD=0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada;
@@ -22,8 +23,8 @@ AggregatorV3Interface internal MaticToUsd;
 	AggregatorV3Interface internal BtcToUsd;
 
 	constructor() {
-		setChainlinkToken(LINK_TOKEN);
-		setChainlinkOracle(MATIC_TO_USD);
+		//setChainlinkToken(LINK_TOKEN);
+		//setChainlinkOracle(MATIC_TO_USD);
 		MaticToUsd = AggregatorV3Interface(MATIC_TO_USD);
 		EthToUsd = AggregatorV3Interface(ETH_TO_USD);
 		BtcToUsd = AggregatorV3Interface(BTC_TO_USD);
@@ -31,11 +32,7 @@ AggregatorV3Interface internal MaticToUsd;
 
 	function getMaticUsd() public view returns(int) {
 		(
-		uint80 roundID,
-		int price,
-		uint startedAt,
-		uint timeStamp,
-		uint80 answeredInRound
+		, int price, , ,
 		) = MaticToUsd.latestRoundData();
 		return price;
 	}
@@ -60,7 +57,7 @@ AggregatorV3Interface internal MaticToUsd;
 	}
 
 	function qtyToMatics(uint qty) public view returns(uint) {
-		uint price = uint256(getMaticUsd());
+		uint price = uint256(getMaticUsd()) / 10 ** 18;
 
 		return price.mul(qty);
 
