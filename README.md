@@ -4,7 +4,8 @@
 
 ### PHASE 1 (Private sale)
 
-<details><summary>Requirements:</summary>
+<details><summary>Requirements</summary>
+
 
 - Connect your metamask to Polygon. Help can be found here https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask/
 - Get some polygon matics tokens a well made tutorial is available from benzinga here: https://www.benzinga.com/money/how-to-buy-polygon-matic/
