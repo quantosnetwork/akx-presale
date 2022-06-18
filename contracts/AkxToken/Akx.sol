@@ -2,13 +2,13 @@
 pragma solidity >=0.8.9;
 
 // AKXG is the governance token
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "../security/Roles.sol";
 import "./PresaleExchange.sol";
+import "hardhat/console.sol";
 
-contract AKX is Initializable, UUPSUpgradeable, Roles, ERC20Upgradeable, ERC20PermitUpgradeable {
+contract AKX is Roles, ERC20, ERC20Permit {
 	string public  _name;
 	string public _symbol;
 	uint8 public _decimals;
@@ -28,20 +28,17 @@ contract AKX is Initializable, UUPSUpgradeable, Roles, ERC20Upgradeable, ERC20Pe
 
 
 
-	function initialize(address account, string memory name_, string memory symbol_, uint8  decimals_, uint256 supply_) initializer public {
-		require(_initialized == false, "already initialized");
-		__UUPSUpgradeable_init();
-		__Roles_init(msg.sender);
-		__ERC20_init(_name, symbol_);
-		__ERC20Permit_init(_name);
-		initializeAKX(account);
+	constructor(address account, string memory name_, string memory symbol_, uint8  decimals_, uint256 supply_) Roles(msg.sender) ERC20(name_, symbol_) ERC20Permit(name_) {
+
+		_name = name_;
+		_symbol = symbol_;
+		_decimals = decimals_;
+
+		initializeAKX(account, supply_);
 
 	}
 
-	function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(SUPERADMIN_ROLE) {}
 
-
-	fallback () external payable {}
 
 	function isPresale(uint trustedTime, uint presaleStart) public pure returns(bool) {
 		return trustedTime >= presaleStart;
@@ -52,33 +49,33 @@ contract AKX is Initializable, UUPSUpgradeable, Roles, ERC20Upgradeable, ERC20Pe
 		_presaleExchange.allowBuying();
 	}
 
-	function initializeAKX(address account) public onlyInitializing {
-		require(_initialized == false, "contract already initialized");
-		available = _totalSupply / 300;
-		_mint(account, available);
+	function initializeAKX(address account, uint _totalSupply) public {
+
+		available = _totalSupply;
+		_mint(msg.sender, available);
 		_initialized = true;
-		emit Transfer(address(0), account, available);
+		emit Transfer(address(0), msg.sender, available);
 
 	}
 
 
 	function _afterTokenTransfer(address from, address to, uint256 amount)
 	internal
-	override(ERC20Upgradeable)
+	override(ERC20)
 	{
 		super._afterTokenTransfer(from, to, amount);
 	}
 
 	function _mint(address to, uint256 amount)
 	internal
-	override(ERC20Upgradeable)
+	override(ERC20)
 	{
 		super._mint(to, amount);
 	}
 
 	function _burn(address account, uint256 amount)
 	internal
-	override(ERC20Upgradeable)
+	override(ERC20)
 	{
 		super._burn(account, amount);
 	}

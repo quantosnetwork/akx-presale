@@ -17,7 +17,7 @@ const Oracle = await ethers.getContractFactory("PriceAggregator");
 const oracle = await Oracle.deploy();
 
 console.log(`chainlink pricefeed oracle deployed at ${oracle.address}`);
-await oracle.deployTransaction.wait(5);
+//await oracle.deployTransaction.wait(5);
 //await hre.run("verify:verify", {address: oracle.address});
 
 

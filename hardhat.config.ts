@@ -8,6 +8,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-abi-exporter";
 import "hardhat-deploy";
+import "@nomiclabs/hardhat-ganache";
 import "@openzeppelin/hardhat-upgrades";
 
 dotenv.config();
@@ -76,6 +77,12 @@ const config: HardhatUserConfig = {
       chainId: 69,
       gasPrice: "auto",
       accounts:  process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    ganache: {
+      url: "http://127.0.0.1:7545",
+      chainId: 1337,
+      accounts:  ['0xd3acde496d2650b39485101ddd6eb1820ff133836b2eb609d4fc7c8955866abc']
+
     }
   },
   gasReporter: {

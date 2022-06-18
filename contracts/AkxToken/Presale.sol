@@ -2,13 +2,12 @@
 pragma solidity ^0.8.14;
 
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
 import "@rari-capital/solmate/src/tokens/WETH.sol";
 import "@rari-capital/solmate/src/utils/SafeTransferLib.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "../security/Roles.sol";
-import "../security/FundsLocker.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
 interface Presale {
 	event PhaseStarted(uint phase, uint blocknum);
@@ -24,7 +23,7 @@ interface Presale {
 }
 
 
-contract AkxPresale is  Initializable,PausableUpgradeable, Presale, FundsLocker {
+contract AkxPresale is  Pausable, Presale, Roles{
 
 	using SafeTransferLib for ERC20;
 
@@ -68,9 +67,8 @@ contract AkxPresale is  Initializable,PausableUpgradeable, Presale, FundsLocker 
 	uint internal _trustedTime;
 
 
-	function initialize(uint trustedTime) initializer public {
-		__AccessControl_init();
-		__AccessControlEnumerable_init();
+	constructor(uint trustedTime) Roles(msg.sender) {
+
 		// upon deployment all roles are assigned to the deployer
 		_setupRole(PRESALE_OPERATOR, msg.sender);
 		_setupRole(MINTER_ROLE, msg.sender);
@@ -83,7 +81,7 @@ contract AkxPresale is  Initializable,PausableUpgradeable, Presale, FundsLocker 
 
 	}
 
-	function __AkxPresale_init() internal onlyInitializing {
+	function __AkxPresale_init() internal  {
 	 totalHoldings = 0;
 	remainingForPresale = 0;
 	numHolders = 0;
@@ -95,7 +93,7 @@ contract AkxPresale is  Initializable,PausableUpgradeable, Presale, FundsLocker 
 		pauseContract();
 	}
 
-	function __AkxPresale_init_unchained() internal onlyInitializing {}
+	function __AkxPresale_init_unchained() internal  {}
 
 
 	function pauseContract() public onlyRole(PRESALE_OPERATOR) {
@@ -116,9 +114,7 @@ contract AkxPresale is  Initializable,PausableUpgradeable, Presale, FundsLocker 
 		timeLockedWallet = _timeLock;
 	}
 
-	function setupLockableWallet(address _wal, address _token, uint amount, uint duration) internal {
-		lockOnlyAmount(_wal, _token, amount, duration);
-	}
+
 
 
 	function recordPledge(address _sender, uint256 pledge, uint256 qty, uint256 phaseSupply, uint256 maxHolders) public onlyRole(PRESALE_OPERATOR) {

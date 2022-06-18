@@ -22,21 +22,19 @@ const tokenConfig = {
 };
 
 const akx = await ethers.getContractFactory("AKX");
-const AKX = await upgrades.deployProxy(akx, [
+const AKX = await akx.deploy(
     tokenConfig.account,
     tokenConfig.name,
     tokenConfig.symbol,
     tokenConfig.decimal,
-    tokenConfig.supply
-], {initializer:"initialize"});
+    tokenConfig.supply);
 
-await AKX.deployed();
 
 console.log(`AKX Lab token deployed at ${AKX.address}`);
 
-const impl = await upgrades.erc1967.getImplementationAddress(AKX.address);
+//const impl = await upgrades.erc1967.getImplementationAddress(AKX.address);
 
-await hre.run("verify:verify", {address: impl});
+//await hre.run("verify:verify", {address: impl});
 
 
 };

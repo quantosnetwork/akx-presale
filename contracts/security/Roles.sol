@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
-abstract contract Roles is AccessControlEnumerableUpgradeable {
+abstract contract Roles is AccessControlEnumerable {
 
 	bytes32 public constant PRESALE_OPERATOR = keccak256("PRESALE_OPERATOR");
 	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -17,8 +17,8 @@ abstract contract Roles is AccessControlEnumerableUpgradeable {
 
 
 
-	function __Roles_init(address _initial) public onlyInitializing {
-		__AccessControl_init();
+	constructor(address _initial) {
+
 		/// @notice we set all the roles to the deployer address when initializing
 		_setupRole(PRESALE_OPERATOR, _initial);
 		_setupRole(MINTER_ROLE, _initial);

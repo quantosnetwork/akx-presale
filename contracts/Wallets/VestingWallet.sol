@@ -15,7 +15,7 @@ interface IVestingWallet {
 
 }
 
-contract VestingWallet is IVestingWallet, Initializable, Roles, ReentrancyGuard {
+contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
 
 	using SafeMath for uint256;
 	using SafeMath for uint16;
@@ -38,7 +38,11 @@ contract VestingWallet is IVestingWallet, Initializable, Roles, ReentrancyGuard 
 
 	mapping(address => Grant) private _tokenGrants;
 
-	function initialize(address _token, address _sender) initializer public {
+	constructor(address _token, address _sender) Roles(msg.sender) {
+		initialize(_token, _sender);
+	}
+
+	function initialize(address _token, address _sender)  public {
 		require(_token != address(0), "no zero address");
 		token = ERC20(_token);
 		walletOwner = _sender;

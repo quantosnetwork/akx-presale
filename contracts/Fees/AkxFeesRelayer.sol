@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "../security/Roles.sol";
 
-contract AkxFeesRelayer is Initializable, Roles {
-	using AddressUpgradeable for address;
-	using SafeERC20Upgradeable for IERC20Upgradeable;
-	using CountersUpgradeable for CountersUpgradeable.Counter;
+contract AkxFeesRelayer is Roles {
+	using Address for address;
+	using SafeERC20 for IERC20;
+	using Counters for Counters.Counter;
 
 
 
-CountersUpgradeable.Counter _feeIndex;
+Counters.Counter _feeIndex;
 
 	address public feeSafe;
 
@@ -30,11 +30,14 @@ CountersUpgradeable.Counter _feeIndex;
 	event FeesSentToSafe(address indexed _from, address indexed _to, uint256 _amount);
 	event ExternalFeesReceived(address indexed _from, uint256 amount);
 
+	constructor(address _safe, uint256 _defaultFeeRate) Roles(msg.sender) {
+		initialize(_safe, _defaultFeeRate);
+	}
 
-	function initialize(address _safe, uint256 _defaultFeeRate) public initializer {
+	function initialize(address _safe, uint256 _defaultFeeRate) public {
 
 		require(_defaultFeeRate <= 1e18, "!Interest fee");
-		__Roles_init(msg.sender);
+		//__Roles_init(msg.sender);
 		defaultFeeRate = _defaultFeeRate;
 		_receivedFees = 0;
 		_pendingTransfer = 0;

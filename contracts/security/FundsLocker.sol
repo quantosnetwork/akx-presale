@@ -20,7 +20,7 @@ interface FundsLockerInterface is IERC165Upgradeable {
 }
 
 
-contract FundsLockerManager is Roles {
+abstract contract FundsLockerManager is Roles {
 	bytes32 internal constant LOCK_STORAGE_SLOT = keccak256("funds_locker_manager.locker.address");
 
 	function setLocker(address locker) external onlyRole(TREASURY_ROLE) {
@@ -45,7 +45,7 @@ contract FundsLockerManager is Roles {
 
 }
 
-contract FundsLocker is FundsLockerInterface, Roles {
+abstract contract FundsLocker is FundsLockerInterface, Roles {
 	bytes32 internal constant LOCK_STORAGE_SLOT = keccak256("funds_locker.locker.struct");
 	mapping(address => uint256) internal lockedAmount;
 	mapping(address => uint256) internal unlockedAmount;
@@ -155,7 +155,7 @@ contract FundsLocker is FundsLockerInterface, Roles {
 
 
 
-	function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerableUpgradeable, IERC165Upgradeable) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerable, IERC165Upgradeable) returns (bool) {
 		return
 		interfaceId == type(FundsLockerInterface).interfaceId || // 0xe6d7a83a
 		interfaceId == type(IERC165Upgradeable).interfaceId; // 0x01ffc9a7s

@@ -15,19 +15,27 @@ const func4: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 
     const WL = await ethers.getContractFactory("Whitelist");
-    const wl = await upgrades.deployProxy(WL, [], {initializer:"initialize"});
-    await wl.deployed();
+    const wl = await WL.deploy();
+   // await wl.deployed();
 
-    const wlimpl = await upgrades.erc1967.getImplementationAddress(wl.address);
-   await hre.run("verify:verify", {address: wlimpl});
+   // const wlimpl = await upgrades.erc1967.getImplementationAddress(wl.address);
+   //await hre.run("verify:verify", {address: wlimpl});
 
-    const PA = await ethers.getContractFactory("PriceAggregator");
-    const pa = await PA.deploy();
-    await pa.deployTransaction.wait(5);
+  //  const PA = await ethers.getContractFactory("PriceAggregator");
+  //  const pa = await PA.deploy();
+  //  await pa.deployTransaction.wait(5);
    //await hre.run("verify:verify", {address: pa.address});
-
+    console.log(`Whitelist deployed at ${wl.address}`);
 
     const presale = await ethers.getContractFactory("PresaleExchange");
+    const PEX = await presale.deploy(
+        wl.address,
+        parseEther("10000000000"),
+        parseEther("0.1")
+    );
+    console.log(`Presale Exchange deployed at ${PEX.address}`);
+
+  /*  const presale = await ethers.getContractFactory("PresaleExchange");
     const PEX = await upgrades.deployProxy(presale, [
         wl.address,
         pa.address,
@@ -38,12 +46,12 @@ const func4: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await PEX.deployed();
 
     console.log(`Presale Exchange deployed at ${PEX.address}`);
-    console.log(`Whitelist deployed at ${wl.address}`);
 
 
-   const impl = await upgrades.erc1967.getImplementationAddress(PEX.address);
 
-  await hre.run("verify:verify", {address: impl});
+   const impl = await upgrades.erc1967.getImplementationAddress(PEX.address);*/
+
+ // await hre.run("verify:verify", {address: impl});
 
 
 };
