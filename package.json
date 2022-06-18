@@ -41,6 +41,7 @@
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
     "@openzeppelin/contracts-upgradeable": "^4.6.0",
+    "@optionality.io/clone-factory": "^0.2.1",
     "chainlink.js": "^0.6.1"
   }
 }

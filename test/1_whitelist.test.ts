@@ -27,7 +27,7 @@ describe('Whitelist', function () {
 
         await this.whitelist.addMeToWhitelist(this.signers[0].address, "info@akxlab.com", "none");
         let result = await this.whitelist.checkIfIamWhitelisted(this.signers[0].address)
-        console.log(result);
+     //   console.log(result);
         expect(result).to.be.true;
     });
 

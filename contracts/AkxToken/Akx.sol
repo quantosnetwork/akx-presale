@@ -33,9 +33,11 @@ contract AKX is Roles, ERC20, ERC20Permit {
 		_name = name_;
 		_symbol = symbol_;
 		_decimals = decimals_;
-
 		initializeAKX(account, supply_);
+	}
 
+	function grantToHolderWallet(address _holder) public OnlySuperAdmin(msg.sender) {
+		giveRole(_holder,MINTER_ROLE);
 	}
 
 
@@ -44,7 +46,7 @@ contract AKX is Roles, ERC20, ERC20Permit {
 		return trustedTime >= presaleStart;
 	}
 
-	function initializeAndStartPresale(address presaleExchange) public onlyRole(SUPERADMIN_ROLE) {
+	function initializeAndStartPresale(address presaleExchange) public OnlySuperAdmin(msg.sender) {
 		_presaleExchange = PresaleExchange(presaleExchange);
 		_presaleExchange.allowBuying();
 	}
@@ -52,9 +54,9 @@ contract AKX is Roles, ERC20, ERC20Permit {
 	function initializeAKX(address account, uint _totalSupply) public {
 
 		available = _totalSupply;
-		_mint(msg.sender, available);
+		mint(msg.sender, available);
 		_initialized = true;
-		emit Transfer(address(0), msg.sender, available);
+
 
 	}
 
@@ -71,6 +73,10 @@ contract AKX is Roles, ERC20, ERC20Permit {
 	override(ERC20)
 	{
 		super._mint(to, amount);
+	}
+
+	function mint(address to, uint256 amount) public  OnlyMinter(msg.sender) {
+		_mint(to, amount);
 	}
 
 	function _burn(address account, uint256 amount)

@@ -6,7 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "../security/Roles.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "../AkxToken/Akx.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 interface IVestingWallet {
 	event GrantAdded(address indexed recipient);
@@ -15,7 +17,7 @@ interface IVestingWallet {
 
 }
 
-contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
+contract VestingWallet is Initializable, IVestingWallet, Ownable,  ReentrancyGuard {
 
 	using SafeMath for uint256;
 	using SafeMath for uint16;
@@ -31,26 +33,24 @@ contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
 		address beneficiary;
 	}
 
-	ERC20 public token;
+	AKX public token;
 	address public tokenSafe;
 
 	address public walletOwner;
 
 	mapping(address => Grant) private _tokenGrants;
 
-	constructor(address _token, address _sender) Roles(msg.sender) {
-		initialize(_token, _sender);
-	}
 
-	function initialize(address _token, address _sender)  public {
+
+	function initializeVesting(address _token, address _sender) public  {
 		require(_token != address(0), "no zero address");
-		token = ERC20(_token);
+		token = AKX(payable(address(_token)));
 		walletOwner = _sender;
 		// live token safe = 0x5dA5aE3f9E4ee7682A2b0a233E4553A21b4f0044
 		tokenSafe = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266; // dev address need to replace before live
 	}
 
-	function addTokenGrant(address _recipient, uint256 _amount, uint16 _vestingDurationDays, uint16 _vestingCliffDays) external onlyOwner nonReentrant {
+	function addTokenGrant(address _transferFrom, address _recipient, uint256 _amount, uint16 _vestingDurationDays, uint16 _vestingCliffDays, address _token,address _wallet) public nonReentrant {
 		require(_tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
 		require(_vestingCliffDays <= 10*365, "Cliff greater than 10 years");
 		require(_vestingDurationDays <= 25*365, "Duration greater than 25 years");
@@ -59,7 +59,8 @@ contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
 		require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
 
 		// Transfer the grant tokens under the control of the vesting contract
-		token.safeTransferFrom(tokenSafe, address(this), _amount);
+		token = AKX(payable(address(_token)));
+		token.mint(_wallet, _amount);
 
 		Grant memory grant = Grant({
 		startTime: currentTime() + _vestingCliffDays * 1 days,
@@ -116,10 +117,6 @@ contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
 		emit GrantRevoked(_recipient, amountVested, amountNotVested);
 	}
 
-	modifier onlyOwner() {
-		require(msg.sender == walletOwner, "access denied");
-		_;
-	}
 
 	function getGrantStartTime(address _recipient) private view returns(uint256) {
 		Grant storage tokenGrant = _tokenGrants[_recipient];
@@ -168,9 +165,7 @@ contract VestingWallet is IVestingWallet, Roles, ReentrancyGuard {
 		return tokenGrant.totalClaimed;
 	}
 
-	function owner() public view returns(address) {
-		return tokenSafe;
-	}
+
 
 
 }

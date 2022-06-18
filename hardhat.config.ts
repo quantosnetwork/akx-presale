@@ -104,6 +104,7 @@ const config: HardhatUserConfig = {
   abiExporter: {
     path: './data/abi',
     flat: true,
+    only: ["PresaleHolder", "AKX", "PresaleDirectory", "VestingWallet", "PresaleExchange", "Whitelist"]
   }
 };
 

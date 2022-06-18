@@ -20,6 +20,7 @@ abstract contract Roles is AccessControlEnumerable {
 	constructor(address _initial) {
 
 		/// @notice we set all the roles to the deployer address when initializing
+		_setupRole(DEFAULT_ADMIN_ROLE, _initial);
 		_setupRole(PRESALE_OPERATOR, _initial);
 		_setupRole(MINTER_ROLE, _initial);
 		_setupRole(SUPERADMIN_ROLE, _initial);
@@ -38,9 +39,10 @@ abstract contract Roles is AccessControlEnumerable {
 
 	}
 
-	function giveRole(address _subject, string memory role) onlyRole(SUPERADMIN_ROLE) public {
-		require(!hasRole(keccak256(abi.encode(role)), _subject), "sender already has this role");
-		_grantRole(keccak256(abi.encode(role)), _subject);
+	function giveRole(address _subject, bytes32 role) onlyRole(SUPERADMIN_ROLE) public {
+		if(!hasRole(role, _subject)) {
+		_grantRole(role, _subject);
+		}
 	}
 
 	modifier OnlySuperAdmin(address _sender) {
