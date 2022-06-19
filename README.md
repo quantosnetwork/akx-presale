@@ -1,47 +1,32 @@
-# Advanced Sample Hardhat Project
+# AKX Labs Presale Contracts
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+## Presale Detail (as of June 18th 2022)
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+### PHASE 1 (Private sale)
 
-Try running some of the following tasks:
+** **IMPORTANT: The private sale will not be on exchanges. Only people who are white listed will be able to participate.** **
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
-```
+<details><summary>Requirements</summary>
 
-# Etherscan verification
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+- Connect your metamask to Polygon. Help can be found here https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask/
+- Get some polygon matics tokens a well made tutorial is available from benzinga here: https://www.benzinga.com/money/how-to-buy-polygon-matic/
+- Follow the instruction to include yourself in the private sale "white list" (COMING SOON)
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
 
-```shell
-hardhat run --network ropsten scripts/deploy.ts
-```
+  </details>
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+<details><summary>How it works</summary>
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
 
-# Performance optimizations
+Once you are whitelisted, you will be able to buy the tokens via our website until the private sale is over.
 
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
-# akx-treasury
+The Private sale is for early investors and as such we offer interesting incentives to them:
+
+- reduced initial price
+- bigger quantities (up to 100,000 tokens per holder)
+- automatic participation in the DAO post-launch
+- tokens are vested in a personal secure vault (nobody other than you is having access to it) for a minimum of 3 months. After 90 days, the tokens will be remitted to you with accrued interest (from vesting / staking). Your secure vault is accessible at any time to you so you can see how cool its was to participate in that presale :)
+- unique rare nfts as a thank you from our CrazyApes collection</details>
+
+
