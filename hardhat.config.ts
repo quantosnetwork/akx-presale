@@ -38,9 +38,9 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
-    hardhat: {
+    /*hardhat: {
       chainId: 31337,
-    },
+    },*/
     localhost: {
       chainId: 31337,
     },
@@ -73,7 +73,7 @@ const config: HardhatUserConfig = {
       accounts:   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     },
     optimism_testnet: {
-      url: "https://opt-kovan.g.alchemy.com/v2/eKRXH2pNhTmU7e63z6ea1wes2I7VW7T9",
+      url: "https://opt-kovan.g.alchemy.com/v2/",
       chainId: 69,
       gasPrice: "auto",
       accounts:  process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
@@ -83,7 +83,18 @@ const config: HardhatUserConfig = {
       chainId: 1337,
       accounts:  ['0xd3acde496d2650b39485101ddd6eb1820ff133836b2eb609d4fc7c8955866abc']
 
-    }
+    },
+    hardhat: {
+      mining: {
+        mempool: {
+          order: "fifo"
+        }
+      },
+      forking: {
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ETH_KEY}`,
+        blockNumber: 14390000
+      },
+    },
   },
   gasReporter: {
     enabled: true,
@@ -96,11 +107,7 @@ const config: HardhatUserConfig = {
   },
 
 // @ts-ignore
-  hardhat: {
-    forking: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.POLYGON_KEY}`,
-    },
-  },
+
   abiExporter: {
     path: './data/abi',
     flat: true,
